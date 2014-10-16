@@ -1,6 +1,6 @@
 # Rack::Jwt::Auth
 
-TODO: Write a gem description
+Rack jwt authentication middleware
 
 ## Installation
 
