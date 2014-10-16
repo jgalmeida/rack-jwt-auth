@@ -23,6 +23,19 @@ describe Rack::Jwt::Auth::Authenticate do
     expect(session['username']).to eql('test')
   end
 
+  it 'raises an exception if no secret if provided' do
+    token = issuer.issue_token({user_id: 1, username: 'test'}, 'supertestsecret')
+    get('/', {}, {'HTTP_AUTHORIZATION' => token})
+
+    expect(last_response.status).to eql(200)
+    expect(last_response.body).to   eql('Hello')
+
+    session = last_response.header['rack.jwt.session'][0]
+
+    expect(session['user_id']).to  eql(1)
+    expect(session['username']).to eql('test')
+  end
+
   it 'returns 401 if the authorization header is missing' do
     get('/')
 
