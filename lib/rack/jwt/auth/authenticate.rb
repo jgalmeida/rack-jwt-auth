@@ -11,6 +11,8 @@ module Rack
           raise 'Secret must be provided' if opts[:secret].nil?
 
           @secret = opts[:secret]
+
+          @authenticated_routes   = compile_paths(opts[:only])
           @unauthenticated_routes = compile_paths(opts[:except])
         end
 
@@ -24,7 +26,11 @@ module Rack
         private
 
         def authenticated_route?(env)
-          !@unauthenticated_routes.find { |route| route =~ env['PATH_INFO']}
+          if @authenticated_routes.length > 0
+            @authenticated_routes.find { |route| route =~ env['PATH_INFO'] }
+          else
+            !@unauthenticated_routes.find { |route| route =~ env['PATH_INFO'] }
+          end
         end
 
         def with_authorization(env)
