@@ -116,5 +116,22 @@ describe Rack::Jwt::Auth::Authenticate do
 
   end
 
+  context "with options for decode" do
+    let(:secret) { 'supertestsecret' }
+    let(:app) do
+      main_app = lambda { |env| [200, env, ['Hello']] }
+      described_class.new(main_app, { secret: secret, algorithm: 'RS256' })
+    end
+
+    it 'calls AuthToken.valid? with decode options' do
+      allow(Rack::Jwt::Auth::AuthToken).to receive(:valid?).and_call_original
+      token = JWT.encode({user_id: 1, username: 'test'}, secret, 'HS256')
+      get('/', {}, {'HTTP_AUTHORIZATION' => "Bearer #{token}"})
+
+      expect(Rack::Jwt::Auth::AuthToken).to have_received(:valid?)
+          .with(token, secret, { algorithm: 'RS256' })
+    end
+  end
+
 
 end
