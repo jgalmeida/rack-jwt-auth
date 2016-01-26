@@ -28,11 +28,16 @@ describe Rack::Jwt::Auth::AuthToken do
       expect(data['username']).to eql(data[:username])
     end
 
+    it 'supports options to verify the token' do
+      token = JWT.encode(data, secret, 'HS256')
+      payload = subject.valid?(token, secret, { algorithm: 'RS256' })
+
+      expect(payload).not_to be
+    end
+
     it 'checks if the provided token is invalid when decoded with other secret' do
       token   = subject.issue_token(data, secret)
       payload = subject.valid?(token, 'secret')
-
-      meta, data = payload
 
       expect(payload).not_to be
     end

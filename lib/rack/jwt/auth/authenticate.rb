@@ -4,6 +4,19 @@ module Rack
 
       class Authenticate
 
+        DECODE_OPTIONS = Set.new([:algorithm,
+                                  :verify_expiration,
+                                  :verify_not_before,
+                                  :verify_iss,
+                                  :iss,
+                                  :verify_iat,
+                                  :verify_aud,
+                                  :aud,
+                                  :verify_sub,
+                                  :sub,
+                                  :verify_jti,
+                                  :jti]).freeze
+
         def initialize(app, opts = {})
           @app  = app
           @opts = opts
@@ -33,6 +46,10 @@ module Rack
           end
         end
 
+        def extract_decode_options(opts)
+          opts.select { |k, _| DECODE_OPTIONS.include?(k) }
+        end
+
         def with_authorization(env)
           if authenticated_route?(env)
             header  = env['HTTP_AUTHORIZATION']
@@ -43,7 +60,7 @@ module Rack
 
             return [401, {}, [{message: 'Format is Authorization: Bearer [token]'}.to_json]] unless scheme.match(/^Bearer$/i) && !token.nil?
 
-            payload = AuthToken.valid?(token, @secret)
+            payload = AuthToken.valid?(token, @secret, extract_decode_options(@opts))
 
             return [401, {}, [{message: 'Invalid Authorization'}.to_json]] unless payload
           end
