@@ -11,7 +11,8 @@ describe Rack::Jwt::Auth::Authenticate do
   end
 
   it 'raises an exception if no secret if provided' do
-    expect{ Rack::Jwt::Auth::Authenticate.new(main_app, {}) }.to raise_error
+    main_app = lambda { |env| [200, env, ['Hello']] }
+    expect{ Rack::Jwt::Auth::Authenticate.new(main_app, {}) }.to raise_error(RuntimeError)
   end
 
   it 'returns 200 ok if the request is authenticated' do
