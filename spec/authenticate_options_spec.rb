@@ -9,12 +9,13 @@ describe Rack::Jwt::Auth::Authenticate do
 
     let(:app) do
       main_app = lambda {|env| [200, env, ['Hello']]}
-      Rack::Jwt::Auth::Authenticate.new(main_app,
-                                        {
-                                          except: ['/not_authenticated', '/not_authenticated/*'],
-                                          secret: 'supertestsecret',
-                                          algorithm: 'HS256'
-                                        })
+      Rack::Jwt::Auth::Authenticate.new(
+        main_app,
+        {
+          except: ['/not_authenticated', '/not_authenticated/*'],
+          secret: 'supertestsecret',
+          algorithm: 'HS256'
+        })
     end
 
     it 'returns 200 ok if the request is for a route that is not authenticated' do
