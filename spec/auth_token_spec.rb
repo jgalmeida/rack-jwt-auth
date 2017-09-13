@@ -19,7 +19,7 @@ describe Rack::Jwt::Auth::AuthToken do
 
     it 'checks if the provided token is valid' do
       token   = subject.issue_token(data, secret)
-      payload = subject.valid?(token, secret)
+      payload = subject.valid?(token, secret, { algorithm: 'HS256'})
 
       meta, data = payload
 

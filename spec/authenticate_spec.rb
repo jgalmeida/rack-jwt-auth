@@ -7,7 +7,7 @@ describe Rack::Jwt::Auth::Authenticate do
 
   let(:app) do
     main_app = lambda { |env| [200, env, ['Hello']] }
-    Rack::Jwt::Auth::Authenticate.new(main_app, {secret: 'supertestsecret'})
+    Rack::Jwt::Auth::Authenticate.new(main_app, {secret: 'supertestsecret', algorithm: 'HS256'})
   end
 
   it 'raises an exception if no secret if provided' do

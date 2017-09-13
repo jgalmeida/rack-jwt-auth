@@ -23,6 +23,10 @@ module Rack
 
           raise 'Secret must be provided' if opts[:secret].nil?
 
+          # @see https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/
+          # @see https://github.com/jwt/ruby-jwt/pull/184
+          raise 'Algorithm must be provided for security reason' if opts[:algorithm].nil?
+
           @secret = opts[:secret]
 
           @authenticated_routes   = compile_paths(opts[:only])
