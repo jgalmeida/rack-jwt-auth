@@ -6,7 +6,7 @@ module Rack
 
         # Note: this method is only used by specs
         def self.issue_token(payload, secret)
-          JWT.encode(payload, secret)
+          JWT.encode(payload, secret, 'HS256')
         end
 
         def self.valid?(token, secret, opts = {})
